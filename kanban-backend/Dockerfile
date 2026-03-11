@@ -1,4 +1,11 @@
-FROM nginx:alpine
-COPY . /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM node:18-alpine
+WORKDIR /app
+RUN npm init -y && npm install express
+RUN echo "const express = require('express'); \
+const app = express(); \
+const port = process.env.PORT || 8081; \
+app.get('/', (req, res) => res.send('Kanban backend')); \
+app.get('/api', (req, res) => res.send('API response')); \
+app.listen(port, () => console.log('Server on port ' + port));" > server.js
+EXPOSE 8081
+CMD ["node", "server.js"]
